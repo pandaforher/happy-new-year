@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>24 December — Your first surprise</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" as="style" onload="this.rel='stylesheet'">
+<style>
+/* Lightbox "open original" button (prominent) */
+.lb-open-original {
+  display:block;
+  text-align:center;
+  margin-top:10px;
+}
+.lb-open-original .btn {
+  display:inline-block;
+  background: linear-gradient(180deg,#ff7aa8,#ff4d86);
+  color: white;
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:700;
+  text-decoration:none;
+  box-shadow:0 8px 20px rgba(0,0,0,0.35);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Slightly larger image container for better view */
+.note-lightbox .lb-inner { max-width:98vw; max-height:94vh; padding:8px; }
+#noteLbImg { max-width:100%; max-height:88vh; width:auto; height:auto; object-fit:contain; }
+/* --- LIGHTBOX CSS (paste inside your existing <style> block) --- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,10,10,0.88);
+  z-index: 3000;
+  padding: 20px;
+}
+.lightbox-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 10px;
+  -webkit-user-drag: none;
+  touch-action: none; /* allow pinch/zoom */
+}
+.lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 3010;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+.note-box { cursor: pointer; } /* visual affordance */
+
+/* small helper for fullscreen hint (optional) */
+.lightbox-hint {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.9);
+  font-size: 13px;
+  z-index: 3010;
+  opacity: 0.9;
+  pointer-events:none;
+}
+/* ---- Note lightbox ---- */
+.note-img {
+  cursor: zoom-in;
+  transition: transform 220ms ease;
+}
+.note-img:active { transform: scale(0.99); }
+
+.note-lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,8,10,0.75);
+  z-index: 2000;
+  padding: 20px;
+}
+.note-lightbox[aria-hidden="false"] { display:flex; }
+
+.note-lightbox .lb-inner {
+  max-width: 96vw;
+  max-height: 92vh;
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  -webkit-overflow-scrolling: touch;
+}
+.note-lightbox img {
+  display:block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  user-select: none;
+  touch-action: manipulation;
+}
+.note-lightbox .close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+  z-index: 2100;
+}
+  /* --- BASE --- */
+  :root{
+    --bg1:#2f0620;
+    --bg2:#6b2140;
+    --card:#fff0f4;
+    --accent:#ff6fa3;
+    --accent2:#ff8fbf;
+    --muted:#9b7f86;
+    --text:#3c1b1d;
+  }
+  html,body{height:100%;margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; -webkit-font-smoothing:antialiased;}
+  body.preload{overflow:hidden;} /* keep from flashing until JS finishes */
+  .page{
+    min-height:100vh;
+    padding:36px 20px;
+    box-sizing:border-box;
+    background: radial-gradient(circle at 50% 30%, #f8eaf0 0%, transparent 20%),
+                linear-gradient(180deg,#4c1930 0%, #2a0715 100%);
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+  }
+
+  /* --- CARD --- */
+  .card-wrap{
+    width:100%;
+    max-width:520px;
+    margin: 8px auto;
+    position:relative;
+    z-index:2;
+  }
+  .hero{
+    background: linear-gradient(180deg, rgba(255,245,247,0.95) 0%, rgba(255,236,242,0.95) 100%);
+    border-radius:28px;
+    padding:34px 28px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    color:var(--text);
+    overflow:visible;
+  }
+  .small-emoji{font-size:22px;display:block;text-align:center;margin-bottom:6px}
+  h1{font-size:36px;margin:0 0 6px;text-align:center;font-weight:800;color:#2f1520;letter-spacing:-1px}
+  p.lead{margin:0 0 20px;text-align:center;color:var(--muted);font-weight:400}
+
+  /* inner content card */
+  .content-card{
+    margin-top:18px;
+    border-radius:20px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,247,249,0.95));
+    padding:22px;
+    box-shadow: 0 10px 26px rgba(31,6,14,0.12);
+    color:var(--muted);
+    overflow:hidden;
+  }
+  .content-card p{line-height:1.7;margin:0 0 16px;font-size:18px;color:#6f5056}
+  .content-card h3{margin: 4px 0 14px;color:#2d1b1d;font-size:22px}
+
+  /* NOTE card */
+  .note-box{
+    margin-top:8px;
+    border-radius:18px;
+    padding:22px;
+    background:linear-gradient(180deg, rgba(255,248,249,0.9), rgba(255,241,243,0.9));
+    border:1px dashed rgba(180,150,155,0.35);
+    box-shadow: inset 0 2px 6px rgba(255,255,255,0.5);
+    text-align:center;
+    color:#966f74;
+  }
+  .note-box img{max-width:100%;height:auto;border-radius:12px;display:block;margin:8px auto 0}
+
+  /* Play button + status */
+  .controls{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    margin:18px 0 10px;
+    justify-content:flex-start;
+  }
+  .btn{
+    background:linear-gradient(180deg,var(--accent),var(--accent2));
+    color:#fff;padding:12px 20px;border-radius:999px;border:none;font-weight:700;box-shadow:0 10px 24px rgba(255,120,150,0.18);
+    cursor:pointer;
+    font-size:16px;
+  }
+  .status{color:#bca0a6;font-weight:600}
+
+  /* go next */
+  .next-btn{
+    margin-top:18px;display:inline-block;background:linear-gradient(180deg,#ff92b2,#ff5c99);
+    padding:14px 28px;border-radius:999px;color:white;font-weight:800;text-decoration:none;box-shadow:0 12px 24px rgba(255,92,153,0.18);
+  }
+
+  /* --- MODAL (LOCK) --- */
+  .modal-backdrop{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    z-index:1000;pointer-events:auto;
+    background:rgba(20,10,12,0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding:28px;
+  }
+  .modal{
+    width:100%;
+    max-width:640px;
+    background:linear-gradient(180deg,#fff6f8,#fff0f3);
+    border-radius:30px;padding:26px;box-shadow:0 18px 44px rgba(20,8,18,0.42);text-align:center;
+  }
+  .modal h2{margin:0;font-size:30px;color:#3a1720;font-weight:800}
+  .modal p{color:var(--muted);margin:12px 0 18px}
+  .countdown{font-weight:800;font-size:28px;color:#3a1720;margin:6px 0 12px}
+
+  .secret-input{
+    display:block;width:100%;max-width:520px;margin:10px auto 14px;
+    padding:12px 18px;border-radius:26px;border:1px solid rgba(160,120,125,0.2);
+    background:white;font-size:16px;outline:none;box-shadow:0 6px 14px rgba(0,0,0,0.06);
+  }
+  .secret-input:focus{box-shadow:0 8px 20px rgba(255,110,150,0.12);border-color: rgba(255,150,170,0.5)}
+
+  .modal .unlock-btn{display:inline-block;padding:10px 24px;border-radius:28px;background:linear-gradient(180deg,#ff8fbf,#ff5c99);color:white;font-weight:700;border:none;cursor:pointer;box-shadow:0 10px 26px rgba(255,92,153,0.18)}
+
+  /* hidden helper:
+     when JS hasn't determined whether modal should show, hide it to avoid flash */
+  .preload .modal-backdrop{visibility:hidden;opacity:0}
+
+  @media (max-width:520px){
+    h1{font-size:32px}
+    .modal h2{font-size:26px}
+    .countdown{font-size:22px}
+  }
+
+  /* --- Floating hearts (used after unlock) --- */
+  .floating-heart {
+    position: fixed;
+    bottom: -20px;
+    color: rgba(255, 105, 180, 0.95);
+    font-size: 22px;
+    animation: heartFloat 6s cubic-bezier(.2,.9,.2,1) forwards;
+    pointer-events: none;
+    z-index: 900;
+    transform-origin: center;
+  }
+  @keyframes heartFloat {
+    0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+    8% { opacity: 1; }
+    90% { opacity: 0.85; }
+    100% { transform: translateY(-120vh) translateX(var(--hf, 0px)) scale(var(--hs,1.1)); opacity: 0; }
+  }
+
+  /* --- Emoji petals (flowers) --- */
+  .petal {
+    position: fixed;
+    top: -12vh; /* start above viewport */
+    pointer-events: none;
+    z-index: 850;
+    font-size: 26px;
+    transform-origin: center;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.12));
+    opacity: 0; /* start invisible */
+  }
+
+@keyframes petalFall {
+  0% {
+    transform: translateY(-12vh) translateX(0) rotate(0) scale(var(--scale,1));
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  75% {
+    /* fully visible while falling */
+    opacity: 0.95;
+  }
+  90% {
+    /* begin gentle fade near the end */
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--sway, 30px)) rotate(var(--rot, 360deg)) scale(var(--scale, 1));
+    opacity: 0; /* final fade */
+  }
+}
+</style>
+</head>
+<body class="preload">
+  <div class="page">
+    <div class="card-wrap" id="mainCard">
+      <div class="hero">
+        <span class="small-emoji">📮💖</span>
+        <h1>24 December — <br/>Your first surprise</h1>
+        <p class="lead">Your 7-day journey begins today, wifey.</p>
+
+        <div class="content-card" id="contentCard">
+          <p>Hellooooo wifey 👩‍❤️‍👨 So yaha se suru hota hai, 7 days of gifts/surprises till new year hehehehe. Hope you'll like it. For the first day, I have a handwritten note for you, ab jyada ni bolunga 🤫 — go ahead and read it wifey hehe 😘</p>
+
+          <h3>For you, from your panda</h3>
+
+          <!-- Music control above note box so music plays while reading -->
+          <div class="controls">
+            <button id="playBtn" class="btn" aria-pressed="false">Play song 🎵</button>
+            <div class="status" id="audioStatus">Song ready</div>
+          </div>
+
+          <div class="note-box" id="noteBox" aria-live="polite">
+            <div style="font-weight:600;color:#8c6a6f;font-size:18px">My handwritten note for you</div>
+            <div style="font-size:15px;margin-top:8px">(Upload <strong>note-24.jpg</strong> into the same folder to preview it here.)</div>
+            <img id="noteImg" alt="handwritten note" style="display:none;margin-top:14px;border-radius:10px" />
+          </div>
+
+          <p style="margin-top:18px;color:#6b4850">This was Day 1. Tomorrow, a new surprise unlocks for you. 🌙✨</p>
+
+          <a class="next-btn" href="#" style="pointer-events:none;opacity:0.9">Go to 25 December →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCK MODAL -->
+  <div id="modalBackdrop" class="modal-backdrop" style="display:none" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Enter your little key 💗</h2>
+      <p id="modalMessage">Type the secret key we decided.</p>
+      <div id="countdown" class="countdown" aria-live="polite"></div>
+
+      <!-- password area (only shown when date reached) -->
+      <input id="secretKeyInput" class="secret-input" placeholder="Your secret key" autocomplete="off" type="password" style="display:none" />
+
+      <button id="unlockBtn" class="unlock-btn" style="display:none">Unlock ✨</button>
+    </div>
+  </div>
+  <!-- NOTE LIGHTBOX -->
+<div id="noteLightbox" class="note-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Handwritten note preview">
+  <button id="noteLbClose" class="close-btn" aria-label="Close">✕</button>
+  <div class="lb-inner" role="document">
+    <img id="noteLbImg" alt="Handwritten note (full view)" src="">
+  </div>
+</div>
+
+  <!-- Audio -->
+  <audio id="bgAudio" preload="metadata">
+    <source src="uiy.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+/* -------------------------
+   Main app script (clean)
+   ------------------------- */
+(function(){
+  // === CONFIG ===
+  // If you want to skip date lock for testing, set TARGET_DATE = null
+  const TARGET_DATE = null;
+  const UNLOCK_KEY = 'wifey';
+  const SESSION_KEY = 'day24_unlocked';
+
+  // Elements
+  const body = document.body;
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const countdownEl = document.getElementById('countdown');
+  const secretInput = document.getElementById('secretKeyInput');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const playBtn = document.getElementById('playBtn');
+  const audio = document.getElementById('bgAudio');
+  const audioStatus = document.getElementById('audioStatus');
+  const noteImg = document.getElementById('noteImg');
+
+  let countdownTimer = null;
+
+  function showModal({showInput=false, timeText=''} = {}) {
+    modalBackdrop.style.display = 'flex';
+    modalBackdrop.setAttribute('aria-hidden','false');
+    countdownEl.textContent = timeText;
+    if (showInput) {
+      secretInput.style.display = '';
+      unlockBtn.style.display = '';
+      setTimeout(()=>secretInput.focus(), 120);
+    } else {
+      secretInput.style.display = 'none';
+      unlockBtn.style.display = 'none';
+    }
+    // lock scroll
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+  function hideModal() {
+    modalBackdrop.style.display = 'none';
+    modalBackdrop.setAttribute('aria-hidden','true');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  function formatRemaining(ms){
+    if (ms <= 0) return '00:00:00';
+    const sec = Math.floor(ms/1000);
+    const days = Math.floor(sec / 86400);
+    const hrs = Math.floor((sec % 86400) / 3600);
+    const mins = Math.floor((sec % 3600) / 60);
+    const seconds = sec % 60;
+    if (days > 0) {
+      return `${days} days ${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+    }
+    return `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+  }
+
+  function startCountdown() {
+    clearInterval(countdownTimer);
+    function tick(){
+      const now = new Date();
+      const diff = TARGET_DATE - now;
+      if (diff <= 0) {
+        clearInterval(countdownTimer);
+        showModal({showInput:true, timeText:''});
+        return;
+      } else {
+        countdownEl.textContent = formatRemaining(diff);
+      }
+    }
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+  }
+
+  // Unlock actions: show content, start effects
+  function setUnlocked() {
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
+    // start petals AND hearts
+    if (typeof window.startPetals === 'function') {
+      // start with very gentle density
+      window.startPetals(0.6);
+      // stop petals after 12s to avoid permanent animation
+      setTimeout(() => {
+        if (typeof window.stopPetals === 'function') window.stopPetals();
+      }, 12000); // 12s
+    }
+    if (typeof window.startHearts === 'function') {
+      window.startHearts();
+      // optionally stop hearts after some time:
+      setTimeout(()=>{ if (typeof window.stopHearts === 'function') window.stopHearts(); }, 10000);
+    }
+
+    hideModal();
+  }
+
+  // audio init
+  function initAudio(){
+    noteImg.src = 'note-24.jpg';
+    noteImg.onload = function(){ noteImg.style.display = 'block'; };
+    noteImg.onerror = function(){ noteImg.style.display = 'none'; };
+
+    playBtn.addEventListener('click', ()=>{
+      if (audio.paused) {
+        audio.play().then(()=> {
+          playBtn.textContent = 'Pause song ⏸️';
+          audioStatus.textContent = 'Playing';
+        }).catch(()=> {
+          audioStatus.textContent = 'Tap play to start';
+        });
+      } else {
+        audio.pause();
+        playBtn.textContent = 'Play song 🎵';
+        audioStatus.textContent = 'Paused';
+      }
+    });
+
+    audio.addEventListener('ended', ()=> {
+      playBtn.textContent = 'Play song 🎵';
+      audioStatus.textContent = 'Song finished';
+    });
+    audio.addEventListener('play', ()=> { playBtn.setAttribute('aria-pressed','true'); audioStatus.textContent='Playing'; });
+    audio.addEventListener('pause', ()=> { playBtn.setAttribute('aria-pressed','false'); audioStatus.textContent='Paused'; });
+  }
+
+  function tryUnlock(){
+    const val = (secretInput.value || '').trim();
+    if (val === UNLOCK_KEY) {
+      setUnlocked();
+    } else {
+      unlockBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-6px)'},{transform:'translateY(0)'}],{duration:260});
+      secretInput.value = '';
+      secretInput.focus();
+    }
+  }
+
+  secretInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); }
+  });
+  unlockBtn.addEventListener('click', function(e){ e.preventDefault(); tryUnlock(); });
+
+  // Boot logic
+  (function boot(){
+    initAudio();
+    try {
+      const unlocked = sessionStorage.getItem(SESSION_KEY) === '1';
+      if (unlocked) {
+        hideModal();
+        // start subtle hearts (if you want) — uncomment if desired
+        // if (typeof window.startHearts === 'function') window.startHearts();
+      } else {
+        if (!TARGET_DATE) {
+          // if TARGET_DATE null -> show input right away (for testing)
+          showModal({showInput:true, timeText:''});
+        } else {
+          const now = new Date();
+          if (now >= TARGET_DATE) {
+            showModal({showInput:true, timeText:''});
+          } else {
+            showModal({showInput:false, timeText: formatRemaining(TARGET_DATE - now)});
+            startCountdown();
+          }
+        }
+      }
+    } catch (err) {
+      showModal({showInput:true, timeText:''});
+    } finally {
+      body.classList.remove('preload');
+    }
+  })();
+
+  // prevent escape from closing the modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+    }
+  });
+
+})(); /* end main IIFE */
+// --- LIGHTBOX JS (paste inside your main script IIFE, after noteImg is available) ---
+function openLightbox(src) {
+  // create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+
+  // image element
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = 'Handwritten note';
+  img.loading = 'eager';
+
+  // close button
+  const close = document.createElement('button');
+  close.className = 'lightbox-close';
+  close.innerHTML = '✕';
+  close.title = 'Close';
+
+  // optional fullscreen hint
+  const hint = document.createElement('div');
+  hint.className = 'lightbox-hint';
+  hint.textContent = 'Tap image to toggle fullscreen';
+
+  // append
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+  document.body.appendChild(close);
+  document.body.appendChild(hint);
+
+  // prevent background scroll while open
+  const prevOverflow = document.documentElement.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+
+  // click outside (overlay) closes
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeLightbox();
+  });
+
+  // close button
+  close.addEventListener('click', closeLightbox);
+
+  // tap image -> toggle fullscreen if supported, otherwise do nothing
+  img.addEventListener('click', async (e) => {
+    // try fullscreen API
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (img.requestFullscreen) {
+        await img.requestFullscreen();
+      } else if (img.webkitRequestFullscreen) {
+        await img.webkitRequestFullscreen();
+      } else {
+        // fallback: nothing — user can pinch/zoom (most mobiles allow pinch on opened image)
+      }
+    } catch (err) {
+      // ignore errors
+    }
+  });
+
+  // keyboard escape closes
+  function onKey(e) {
+    if (e.key === 'Escape') closeLightbox();
+  }
+  document.addEventListener('keydown', onKey);
+
+  // cleanup
+  function closeLightbox() {
+    document.removeEventListener('keydown', onKey);
+    if (close.parentNode) close.remove();
+    if (hint.parentNode) hint.remove();
+    if (overlay.parentNode) overlay.remove();
+    document.documentElement.style.overflow = prevOverflow || '';
+    try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e){}
+  }
+}
+
+// Attach to the note box / image click
+// noteImg is already present in your script — reuse it:
+if (typeof noteImg !== 'undefined' && noteImg !== null) {
+  // if user clicks the note container
+  const noteBoxEl = document.getElementById('noteBox');
+  function onOpenNote() {
+    // if image loaded and visible, open lightbox; else open raw file in new tab
+    if (noteImg && noteImg.src && noteImg.style.display !== 'none') {
+      openLightbox(noteImg.src);
+    } else {
+      // fallback: open raw file (so pinch/zoom is available)
+      window.open('note-24.jpg', '_blank');
+    }
+  }
+  noteBoxEl.addEventListener('click', onOpenNote);
+  // also make the image itself open
+  noteImg.addEventListener('click', (e) => { e.stopPropagation(); if (noteImg.src) openLightbox(noteImg.src); });
+}
+/* Improved lightbox wiring that shows a big "Open original" button */
+(function noteLightboxWire(){
+  const thumb = document.getElementById('noteImg');
+  const lb = document.getElementById('noteLightbox');
+  const lbImg = document.getElementById('noteLbImg');
+  const lbClose = document.getElementById('noteLbClose');
+
+  if (!thumb || !lb || !lbImg || !lbClose) return;
+
+  // ensure inner container exists
+  const inner = lb.querySelector('.lb-inner') || (function(){
+    const d = document.createElement('div'); d.className='lb-inner'; lb.appendChild(d); return d;
+  })();
+
+  // create visible "Open original" button/link (prominent)
+  let openLink = lb.querySelector('.lb-open-original');
+  if (!openLink) {
+    openLink = document.createElement('div');
+    openLink.className = 'lb-open-original';
+    openLink.innerHTML = `<a class="btn" id="noteOpenOriginal" target="_blank" rel="noopener noreferrer">Open original (pinch to zoom)</a>`;
+    inner.appendChild(openLink);
+  }
+  const noteOpenOriginal = document.getElementById('noteOpenOriginal');
+
+  function openLightbox(src) {
+    const srcToUse = src || thumb.src || 'note-24.jpg';
+    lbImg.src = srcToUse;
+    noteOpenOriginal.href = srcToUse;
+    lb.classList.add('show');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    try { lbClose.focus(); } catch(e){}
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('show');
+    // delay clearing src so the fade looks smooth
+    setTimeout(()=> { lbImg.src = ''; }, 300);
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  // click thumbnail opens lightbox only if image loaded/visible
+  thumb.addEventListener('click', function(){
+    if (thumb.style.display === 'none' || !thumb.src) return;
+    openLightbox(thumb.src);
+  });
+
+  // tap image toggles a small "fullscreen" class (keeps within page) — optional UX
+  lbImg.addEventListener('click', function(e){
+    // toggle fill mode: add class to body to make image fill more area (user can then open original)
+    if (!lb.classList.contains('fill')) {
+      lb.classList.add('fill');
+      lbImg.style.maxHeight = '98vh';
+      lbImg.style.maxWidth = '98vw';
+    } else {
+      lb.classList.remove('fill');
+      lbImg.style.maxHeight = '88vh';
+      lbImg.style.maxWidth = '100%';
+    }
+  });
+
+  // close
+  lbClose.addEventListener('click', function(e){ e.preventDefault(); closeLightbox(); });
+
+  // clicking outside the inner area closes
+  lb.addEventListener('click', function(e){
+    if (e.target === lb) closeLightbox();
+  });
+
+  // esc key closes
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && lb.classList.contains('show')) closeLightbox();
+  });
+
+})();
+</script>
+
+<script>
+/* -------------------------
+   Hearts & Petals module
+   - startHearts/stopHearts
+   - startPetals(ratePerSecond)/stopPetals
+   ------------------------- */
+
+(function(){
+  /* ------------------ Hearts ------------------ */
+  window._heartInterval = null;
+  function createHeart() {
+    const el = document.createElement('div');
+    el.className = 'floating-heart';
+    el.textContent = '💖';
+    // position and variation
+    const left = Math.random() * 100;
+    const hs = (Math.random() * 0.6 + 0.9).toFixed(2); // scale
+    const hx = (Math.random() * 200 - 100) + 'px'; // x shift in keyframe
+    el.style.left = left + 'vw';
+    el.style.setProperty('--hs', hs);
+    el.style.setProperty('--hf', hx);
+    // random duration & remove after animation
+    el.style.animationDuration = (Math.random() * 2 + 5).toFixed(2) + 's';
+    document.body.appendChild(el);
+    el.addEventListener('animationend', ()=> el.remove());
+  }
+
+  window.startHearts = function(ratePerSecond = 1) {
+    if (window._heartInterval) return;
+    const interval = Math.max(250, Math.round(1000 / ratePerSecond));
+    // initial burst
+    createHeart();
+    window._heartInterval = setInterval(()=> {
+      if (Math.random() < 0.8) createHeart();
+    }, interval);
+  };
+  window.stopHearts = function(){
+    if (window._heartInterval) { clearInterval(window._heartInterval); window._heartInterval = null; }
+    document.querySelectorAll('.floating-heart').forEach(el => {
+      // fade out smoothly
+      el.style.transition = 'opacity 600ms linear, transform 600ms linear';
+      el.style.opacity = '0';
+      setTimeout(()=> el.remove(), 650);
+    });
+  };
+
+  /* ------------------ Emoji Petals (clean, few, smooth) ------------------ */
+  let _petalInterval = null;
+
+  function createPetal() {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    // Emoji choices (flowers)
+    const choices = ['🌸','🌺','🌼','🌷','💮'];
+    el.textContent = choices[Math.floor(Math.random() * choices.length)];
+
+    // ensure start is above viewport and always falls down
+    const left = Math.random() * 100;
+    el.style.left = left + 'vw';
+
+    // gentle ranges for soft motion
+    const scale = (Math.random() * 0.5 + 0.95).toFixed(2); // 0.95 - 1.45
+    const sway = (Math.random() * 100 - 50) + 'px';         // -50..50 px
+    const rot = (Math.random() * 240 - 120) + 'deg';       // rotation
+    const dur = (Math.random() * 2 + 7).toFixed(2) + 's';  // 7-9s for slower smooth fall
+
+    el.style.setProperty('--scale', scale);
+    el.style.setProperty('--sway', sway);
+    el.style.setProperty('--rot', rot);
+    el.style.fontSize = (18 * parseFloat(scale)) + 'px';
+
+    // animation: always top -> down, smooth easing, fade near end handled in CSS keyframes
+    el.style.animation = `petalFall ${dur} cubic-bezier(0.22,0.85,0.35,1) forwards`;
+
+    document.body.appendChild(el);
+
+    // when animation ends, remove element (CSS fades it)
+    el.addEventListener('animationend', () => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, { once: true });
+  }
+
+  // Very few petals by default: ratePerSecond ~0.4 (one every ~2.5s)
+  window.startPetals = function(ratePerSecond = 0.4) {
+    if (_petalInterval) return;
+    const interval = Math.max(400, Math.round(1000 / Math.max(0.1, ratePerSecond)));
+    // small initial gentle burst (1 or 2)
+    setTimeout(() => { createPetal(); }, 80);
+    if (Math.random() < 0.5) setTimeout(() => { createPetal(); }, 260);
+    _petalInterval = setInterval(() => {
+      if (Math.random() < 0.95) createPetal();
+    }, interval);
+  };
+
+  window.stopPetals = function(){
+    if (_petalInterval) { clearInterval(_petalInterval); _petalInterval = null; }
+    // fade & nudge remaining petals away smoothly
+    document.querySelectorAll('.petal').forEach(el => {
+      el.style.transition = 'opacity 800ms linear, transform 800ms linear';
+      el.style.opacity = '0';
+      // gently nudge down to make exit natural
+      el.style.transform = (el.style.transform || '') + ' translateY(60px)';
+      setTimeout(()=> { if (el.parentNode) el.parentNode.removeChild(el); }, 850);
+    });
+  };
+
+})(); /* end Hearts & Petals module */
+</script>
+</body>
+</html>
