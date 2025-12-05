@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Day 27 — Our Little Journal 🤎</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-top: #3c2317;
+      --bg-bottom: #1c100c;
+      --card-bg: #f8e9d7;
+      --card-inner: #fdf4e7;
+      --accent: #c08a5a;
+      --accent-dark: #8d5b34;
+      --text-main: #3f2619;
+      --text-soft: #73594a;
+      --error: #c64141;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px 32px;
+      background: radial-gradient(circle at top, #70503a 0, #2a1810 45%, #120806 100%);
+      color: var(--text-main);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #f9eddc, #f6e3cf);
+      border-radius: 28px;
+      padding: 26px 22px 30px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0,
+        rgba(255, 255, 255, 0.16) 1px,
+        transparent 1px,
+        transparent 6px
+      );
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      background: radial-gradient(circle at top, #fff9f2 0, var(--card-inner) 50%, #f4ddc3 100%);
+      border-radius: 22px;
+      padding: 22px 18px 26px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .pill {
+      text-align: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #8a6e5b;
+      margin-bottom: 8px;
+    }
+
+    .pill span {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(138, 110, 91, 0.4);
+      background: rgba(255, 255, 255, 0.5);
+      display: inline-block;
+    }
+
+    h1 {
+      margin: 6px 0 18px;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 0.03em;
+    }
+
+    h1 span {
+      font-family: "Times New Roman", "Georgia", serif;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-soft);
+    }
+
+    .intro p.em {
+      font-style: italic;
+    }
+
+    .intro p.sig {
+      margin-top: 14px;
+      font-style: italic;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    /* Player section */
+    .player-section {
+      margin-top: 26px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(176, 135, 96, 0.45);
+    }
+
+    .now-playing-label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9b7a60;
+      margin-bottom: 4px;
+    }
+
+    .song-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+
+    .player-note {
+      font-size: 13px;
+      color: #8d6b54;
+      margin-bottom: 12px;
+    }
+
+    .player-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .disc-wrapper {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 30% 20%, #ffffff 0, #f8e7d4 38%, #e0b88e 60%, #c08a5a 80%, #7e4c2a 100%);
+      box-shadow:
+        0 12px 20px rgba(0, 0, 0, 0.3),
+        0 0 0 6px rgba(255, 255, 255, 0.7),
+        inset 0 0 14px rgba(0, 0, 0, 0.35);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .disc-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0, transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .disc-center {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fefefe 0, #f3e1cc 40%, #b47440 70%, #5d2e15 100%);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.85), 0 0 8px rgba(0, 0, 0, 0.45);
+      position: relative;
+      z-index: 1;
+    }
+
+    .disc-wrapper.is-playing {
+      animation: spin 6s linear infinite;
+      box-shadow:
+        0 14px 24px rgba(0, 0, 0, 0.35),
+        0 0 0 6px rgba(255, 255, 255, 0.9),
+        inset 0 0 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .disc-wrapper:active {
+      transform: scale(0.98);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .player-button-label {
+      font-size: 13px;
+      color: #7c5f4d;
+    }
+
+    .player-button-label span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    /* Journal link */
+    .journal-section {
+      margin-top: 26px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(176, 135, 96, 0.45);
+    }
+
+    .journal-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+
+    .journal-text {
+      font-size: 13px;
+      color: #876753;
+      margin-bottom: 12px;
+    }
+
+    .journal-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #d49a6a, #b77541);
+      color: #fffaf5;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .journal-button span {
+      margin-left: 6px;
+      font-size: 16px;
+    }
+
+    /* Unlock overlay */
+    .unlock-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.92));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .unlock-card {
+      width: min(90vw, 420px);
+      background: radial-gradient(circle at top, #fff7ec 0, #f4ddc3 55%, #e3c1a0 100%);
+      border-radius: 24px;
+      padding: 22px 18px 20px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 255, 255, 0.25);
+    }
+
+    .unlock-title {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .unlock-title span {
+      font-family: "Times New Roman", "Georgia", serif;
+    }
+
+    .unlock-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #704c36;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .unlock-input-wrap {
+      margin-bottom: 10px;
+    }
+
+    .unlock-input-wrap label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #8a6249;
+      display: block;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .unlock-input-wrap input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(128, 86, 56, 0.5);
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .unlock-input-wrap input:focus {
+      border-color: #b77541;
+      box-shadow: 0 0 0 1px rgba(183, 117, 65, 0.5);
+    }
+
+    .unlock-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 999px;
+      padding: 9px 0;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d49864, #b66a39);
+      color: #fffaf4;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.6);
+      color: #7b5640;
+      border: 1px solid rgba(123, 86, 64, 0.4);
+    }
+
+    .unlock-hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #7b5a47;
+      text-align: center;
+    }
+
+    .unlock-error {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--error);
+      min-height: 16px;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 14px 24px;
+        border-radius: 24px;
+      }
+
+      .card-inner {
+        padding: 18px 16px 22px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .disc-wrapper {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Unlock overlay -->
+  <div class="unlock-overlay" id="unlockOverlay">
+    <div class="unlock-card">
+      <div class="unlock-title">
+        <span>Enter today’s little key</span> 🤎
+      </div>
+      <div class="unlock-text">
+        Type today’s pass for today’s surprise.
+      </div>
+
+      <div class="unlock-input-wrap">
+        <label for="unlockInput">Secret pass</label>
+        <input
+          id="unlockInput"
+          type="password"
+          placeholder="Type the pass here"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="unlock-actions">
+        <button class="btn btn-primary" id="unlockButton">Unlock</button>
+        <button class="btn btn-ghost" id="cancelButton">Maybe later</button>
+      </div>
+
+      <div class="unlock-error" id="unlockError"></div>
+
+      <div class="unlock-hint">
+        After you unlock, a little song will start playing for you. 🎵
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="page">
+    <div class="card">
+      <div class="card-inner">
+        <div class="pill">
+          <span>Day 27 • Our Little Journal</span>
+        </div>
+
+        <h1><span>Our Little Journal</span> 🤎</h1>
+
+        <div class="intro">
+          <p>
+            This page is a doorway to the place where we quietly write our days —
+            not perfectly, not formally, just honestly.
+          </p>
+          <p>
+            Some days will be noisy and full of chaos, some soft and slow, some a
+            little heavy. All of them are allowed to rest there, in your words
+            and mine.
+          </p>
+          <p class="em">
+            When you have the time, the energy, or the feeling — you can go
+            there, breathe, and simply tell me how your day really was.
+          </p>
+          <p class="sig">
+            from your panda, who loves hearing about your day. 🤎
+          </p>
+        </div>
+
+        <!-- Player -->
+        <div class="player-section">
+          <div class="now-playing-label">Now playing</div>
+          <div class="song-title">A little song for you</div>
+          <div class="player-note">
+            Tap the record to play or pause. 🎵
+          </div>
+
+          <div class="player-wrap">
+            <div class="disc-wrapper" id="disc">
+              <div class="disc-center"></div>
+            </div>
+            <div class="player-button-label" id="playerStatus">
+              <span>Locked</span> — unlock first to start the music.
+            </div>
+          </div>
+        </div>
+
+        <!-- Journal link -->
+        <div class="journal-section">
+          <div class="journal-title">Open our special journal 🤎</div>
+          <div class="journal-text">
+            This is the quiet little place where our days go to rest in words.
+          </div>
+          <a
+            href="https://www.notion.so/PANDA-BAIKO-Our-Little-Forever-Journal-2bf1901c23b0801ca7a3f2fb1d8a5c73?source=copy_link"
+            target="_blank"
+            rel="noopener"
+            class="journal-button"
+          >
+            Go to our journal
+            <span>↗️</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="day27Audio" src="day27.mp3"></audio>
+
+  <script>
+    const PASS = "cutie"; // day 27 pass (case-insensitive)
+
+    const overlay = document.getElementById("unlockOverlay");
+    const input = document.getElementById("unlockInput");
+    const unlockBtn = document.getElementById("unlockButton");
+    const cancelBtn = document.getElementById("cancelButton");
+    const errorEl = document.getElementById("unlockError");
+
+    const audio = document.getElementById("day27Audio");
+    const disc = document.getElementById("disc");
+    const status = document.getElementById("playerStatus");
+
+    let unlocked = false;
+    let isPlaying = false;
+
+    function setStatus(text, isStrong) {
+      status.innerHTML = isStrong ? "<span>" + text + "</span>" : text;
+    }
+
+    function startPlayback() {
+      if (!unlocked) return;
+
+      audio
+        .play()
+        .then(() => {
+          isPlaying = true;
+          disc.classList.add("is-playing");
+          setStatus("Now playing", true);
+        })
+        .catch(() => {
+          setStatus("Tap the record to start the music. 🎵", true);
+        });
+    }
+
+    function togglePlay() {
+      if (!unlocked) return;
+
+      if (audio.paused) {
+        audio.play();
+        isPlaying = true;
+        disc.classList.add("is-playing");
+        setStatus("Now playing", true);
+      } else {
+        audio.pause();
+        isPlaying = false;
+        disc.classList.remove("is-playing");
+        setStatus("Paused — tap to resume.", true);
+      }
+    }
+
+    function handleUnlock() {
+      const val = (input.value || "").trim().toLowerCase();
+
+      if (!val) {
+        errorEl.textContent = "Type the pass first, cutie. 🤍";
+        return;
+      }
+
+      if (val === PASS.toLowerCase()) {
+        unlocked = true;
+        errorEl.textContent = "";
+        overlay.style.display = "none";
+        setStatus("Now playing", true);
+        startPlayback();
+      } else {
+        errorEl.textContent = "Hmm, that wasn’t it. Try again, you’ve got this. 🤎";
+      }
+    }
+
+    unlockBtn.addEventListener("click", handleUnlock);
+
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") {
+        handleUnlock();
+      }
+    });
+
+    cancelBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      setStatus("Locked — you can always unlock later. 🤎", false);
+    });
+
+    disc.addEventListener("click", togglePlay);
+  </script>
+</body>
+</html>
