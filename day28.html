@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 28 — Memory Box</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Poppins", system-ui, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #2b2028, #3a2b35, #1f1a20);
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px;
+    color: #f2f2f2;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(38, 30, 36, 0.82);
+    border-radius: 26px;
+    padding: 26px 20px 30px;
+    box-shadow:
+      0 0 28px rgba(255, 170, 200, 0.25),
+      inset 0 0 24px rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 6px;
+    text-shadow: 0 0 10px rgba(255,180,210,0.35);
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.75;
+    margin-bottom: 20px;
+  }
+
+  /* LOCK */
+  .lock input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #ff9db8, #ffc0d1);
+    color: #2b1a22;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 0 16px rgba(255,170,200,0.55);
+  }
+
+  .error {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #ff9a9a;
+    display: none;
+    text-align: center;
+  }
+
+  /* CONTENT */
+  .content {
+    display: none;
+  }
+
+  .music {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .music button {
+    padding: 10px 22px;
+    border-radius: 22px;
+    border: none;
+    background: linear-gradient(135deg, #ff9db8, #ffc0d1);
+    color: #2b1a22;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(255,170,200,0.5);
+    font-size: 0.9rem;
+  }
+
+  .memories {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .memory {
+    background: rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 0 14px rgba(255,170,200,0.18);
+  }
+
+  .memory img {
+    width: 100%;
+    border-radius: 14px;
+    margin-bottom: 8px;
+  }
+
+  .caption {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    text-align: center;
+  }
+
+  .closing {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.65;
+  }
+
+  .next {
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .next a {
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ff9db8, #ffc0d1);
+    color: #2b1a22;
+    font-size: 0.9rem;
+    box-shadow: 0 0 16px rgba(255,170,200,0.55);
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <!-- LOCK SCREEN -->
+  <div class="lock" id="lock">
+    <h1>Day 28 — Memory Box 🖤</h1>
+    <p class="subtitle">Enter today’s little key.</p>
+
+    <input type="password" id="pass" placeholder="Enter today’s pass">
+    <button class="btn" onclick="unlock()">Unlock ✨</button>
+
+    <div class="error" id="error">That’s not it.</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content">
+
+    <h1>What we did in 2025 💭</h1>
+    <p class="subtitle">(so far)</p>
+
+    <div class="music">
+      <button onclick="toggleMusic()">⏯ Play / Pause</button>
+      <audio id="bgm" src="day28.mp3" loop></audio>
+    </div>
+
+    <div class="memories">
+      <div class="memory"><img src="1.jpg"><p class="caption">This was nothing special. That’s why I saved it.</p></div>
+      <div class="memory"><img src="2.jpg"><p class="caption">A normal conversation I never want to forget.</p></div>
+      <div class="memory"><img src="3.jpg"><p class="caption">We didn’t plan this moment. It just happened.</p></div>
+      <div class="memory"><img src="4.jpg"><p class="caption">Some days felt lighter because of you.</p></div>
+      <div class="memory"><img src="5.jpg"><p class="caption">We talked about nothing — and everything.</p></div>
+      <div class="memory"><img src="6.jpg"><p class="caption">One of those quiet, happy moments.</p></div>
+      <div class="memory"><img src="7.jpg"><p class="caption">I smiled after reading this.</p></div>
+      <div class="memory"><img src="8.jpg"><p class="caption">This stayed with me.</p></div>
+      <div class="memory"><img src="9.jpg"><p class="caption">Just us, being us.</p></div>
+      <div class="memory"><img src="10.jpg"><p class="caption">And this is only the beginning.</p></div>
+    </div>
+
+    <p class="closing">
+      More memories waiting to happen 🤍<br>
+      — from your panda
+    </p>
+
+    <div class="next">
+      <a href="day29.html">Go to Day 29 →</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function unlock() {
+    const pass = document.getElementById("pass").value;
+    if (pass === "panda") {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("content").style.display = "block";
+      document.getElementById("bgm").play();
+    } else {
+      document.getElementById("error").style.display = "block";
+    }
+  }
+
+  function toggleMusic() {
+    const music = document.getElementById("bgm");
+    music.paused ? music.play() : music.pause();
+  }
+</script>
+
+</body>
+</html>
