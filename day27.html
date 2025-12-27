@@ -262,6 +262,45 @@
       font-size: 16px;
     }
 
+    /* --- NEW FOOTER BUTTON STYLE --- */
+    .footer-nav {
+      margin-top: 26px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(176, 135, 96, 0.45);
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: #876753;
+      margin-bottom: 12px;
+    }
+
+    .next-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #d49a6a, #b77541);
+      color: #fffaf5;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s;
+    }
+
+    .next-button span {
+      margin-left: 6px;
+    }
+
+    .next-button:active {
+      transform: scale(0.98);
+    }
+
     /* Unlock overlay */
     .unlock-overlay {
       position: fixed;
@@ -399,7 +438,6 @@
   </style>
 </head>
 <body>
-  <!-- Unlock overlay -->
   <div class="unlock-overlay" id="unlockOverlay">
     <div class="unlock-card">
       <div class="unlock-title">
@@ -432,7 +470,6 @@
     </div>
   </div>
 
-  <!-- Main content -->
   <div class="page">
     <div class="card">
       <div class="card-inner">
@@ -461,7 +498,6 @@
           </p>
         </div>
 
-        <!-- Player -->
         <div class="player-section">
           <div class="now-playing-label">Now playing</div>
           <div class="song-title">A little song for you</div>
@@ -479,7 +515,6 @@
           </div>
         </div>
 
-        <!-- Journal link -->
         <div class="journal-section">
           <div class="journal-title">Open our special journal 🤎</div>
           <div class="journal-text">
@@ -495,11 +530,20 @@
             <span>↗️</span>
           </a>
         </div>
+
+        <div class="footer-nav">
+          <div class="footer-text">
+            Ready for the next memory?
+          </div>
+          <a href="day28.html" class="next-button">
+            Go to 28 December <span>→</span>
+          </a>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Audio -->
   <audio id="day27Audio" src="day27.mp3"></audio>
 
   <script>
