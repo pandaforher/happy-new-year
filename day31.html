@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>31 Dec — The Final Message</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      /* Midnight Gradient Background */
+      background: radial-gradient(circle at top, #1a0b2e 0%, #000000 100%);
+      color: #f2f2f2;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 0 5px white;
+      animation: twinkle linear infinite;
+      z-index: 0;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    .wrap {
+      max-width: 680px;
+      width: 100%;
+      margin-top: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background: rgba(25, 20, 35, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: fadeUp 1.2s ease;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 24px 12px; }
+      h1 { font-size: 24px; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin: 0 0 10px;
+      background: linear-gradient(135deg, #fff3b0, #ffbfa0, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #cec2d6;
+      margin-bottom: 24px;
+      letter-spacing: 0.4px;
+      line-height: 1.5;
+    }
+
+    .lock input {
+      width: 100%; padding: 14px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08); color: #fff;
+      text-align: center; font-size: 15px; outline: none; margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+    .lock input:focus { border-color: #dcb0ff; background: rgba(255,255,255,0.12); }
+
+    .btn {
+      width: 100%; padding: 14px; border-radius: 999px; border: none;
+      background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+      color: #2e1a47; font-size: 15px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(142, 197, 252, 0.25);
+      transition: transform 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+
+    /* --- THE UNIVERSAL VIDEO PLAYER --- */
+    video {
+      width: 100%;
+      height: auto;           /* Allows height to adjust naturally */
+      max-height: 70vh;       /* Limits height so it doesn't take over the whole screen */
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      background: #000;
+      outline: none;
+      margin-bottom: 24px;
+      object-fit: contain;    /* CRITICAL: Ensures the video is never cropped */
+      display: block;         /* Removes weird spacing */
+    }
+
+    .next {
+      display: inline-block;
+      padding: 12px 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.05);
+      color: #e0dbe6;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .next:hover { background: rgba(255,255,255,0.1); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div id="sparkle-container"></div>
+
+  <div class="wrap">
+    
+    <div class="card lock" id="lock">
+      <div style="font-size:40px; margin-bottom:10px;">🌌</div>
+      <h1>31 December</h1>
+      <p class="subtitle">The last page of 2025.<br>Enter the password to see my message.</p>
+      <input type="password" id="pass" placeholder="Enter password" autocomplete="off" />
+      <button class="btn" onclick="unlock()">Unlock 🔓</button>
+    </div>
+
+    <div class="card hidden" id="content">
+      <h1>For You, Wifey</h1>
+      <div class="subtitle">A special message for my wifey...</div>
+
+      <video 
+        src="PASTE_YOUR_MODIFIED_DROPBOX_LINK_HERE" 
+        controls 
+        playsinline>
+      </video>
+
+      <a class="next" href="jan1.html">Go to 1 January 2026 →</a>
+    </div>
+
+  </div>
+
+  <script>
+    const container = document.getElementById('sparkle-container');
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      s.style.animationDelay = (Math.random() * 5) + 's';
+      container.appendChild(s);
+    }
+
+    function unlock() {
+      const p = document.getElementById('pass').value.trim();
+      if (p === 'for_you') {
+        document.getElementById('lock').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
+      } else {
+        alert('Wrong password wifey! Try again 😚');
+      }
+    }
+  </script>
+</body>
+</html>
