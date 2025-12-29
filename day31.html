@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>31 Dec — The Final Message</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
 
@@ -42,28 +42,24 @@
     }
 
     .wrap {
-      max-width: 680px;
+      max-width: 600px; /* Slightly wider for better video view */
       width: 100%;
-      margin-top: 15px;
+      margin-top: 20px;
+      margin-bottom: 40px;
       position: relative;
       z-index: 2;
     }
 
     .card {
-      background: rgba(25, 20, 35, 0.65);
+      background: rgba(25, 20, 35, 0.75);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 40px 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border-radius: 24px;
+      padding: 30px 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
       animation: fadeUp 1.2s ease;
       text-align: center;
-    }
-
-    @media (max-width: 480px) {
-      .card { padding: 24px 12px; }
-      h1 { font-size: 24px; }
     }
 
     @keyframes fadeUp {
@@ -73,8 +69,8 @@
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      margin: 0 0 10px;
+      font-size: 28px;
+      margin: 0 0 8px;
       background: linear-gradient(135deg, #fff3b0, #ffbfa0, #ffffff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -89,6 +85,7 @@
       line-height: 1.5;
     }
 
+    /* Lock Screen Inputs */
     .lock input {
       width: 100%; padding: 14px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.2);
@@ -107,34 +104,51 @@
     }
     .btn:active { transform: scale(0.98); }
 
-    /* --- THE UNIVERSAL VIDEO PLAYER --- */
+    /* --- VIDEO SECTION STYLES --- */
+    .video-container {
+      margin-bottom: 30px;
+    }
+
+    .video-label {
+      text-align: left;
+      font-size: 14px;
+      color: #ffc0d1;
+      margin-bottom: 8px;
+      font-weight: 500;
+      padding-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     video {
       width: 100%;
-      height: auto;           /* Allows height to adjust naturally */
-      max-height: 70vh;       /* Limits height so it doesn't take over the whole screen */
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.15);
+      height: auto;
+      max-height: 70vh;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
       background: #000;
       outline: none;
-      margin-bottom: 24px;
-      object-fit: contain;    /* CRITICAL: Ensures the video is never cropped */
-      display: block;         /* Removes weird spacing */
+      object-fit: contain;
+      display: block;
     }
 
     .next {
       display: inline-block;
-      padding: 12px 32px;
+      padding: 14px 32px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.05);
-      color: #e0dbe6;
+      background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+      color: #2e1a47;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.3s;
+      transition: transform 0.2s;
+      margin-top: 10px;
     }
-    .next:hover { background: rgba(255,255,255,0.1); }
+    .next:active { transform: scale(0.98); }
+    
     .hidden { display: none; }
   </style>
 </head>
@@ -154,13 +168,28 @@
 
     <div class="card hidden" id="content">
       <h1>For You, Wifey</h1>
-      <div class="subtitle">A special message for my wifey...</div>
+      <div class="subtitle">Just press play... I have a lot to say.</div>
 
-      <video 
-        src="PASTE_YOUR_MODIFIED_DROPBOX_LINK_HERE" 
-        controls 
-        playsinline>
-      </video>
+      <div class="video-container">
+        <div class="video-label">Part 1</div>
+        <video 
+          controls 
+          playsinline 
+          preload="metadata"
+          poster="">
+          <source src="https://dl.dropboxusercontent.com/scl/fi/gvngn6elyye0lr7ptrcp8/VID20251230030109.mp4?rlkey=d2uu9bo76p69vmc0qbrl9sd56&st=ufuqce5f&dl=0" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="video-container">
+        <div class="video-label">Part 2</div>
+        <video 
+          controls 
+          playsinline 
+          preload="metadata">
+          <source src="https://dl.dropboxusercontent.com/scl/fi/zy2dsz5c9gs8nl245dcsk/VID20251230033150.mp4?rlkey=fuksmdojnl94te0n2nynvpitq&st=xv3vxiso&dl=0" type="video/mp4">
+        </video>
+      </div>
 
       <a class="next" href="jan1.html">Go to 1 January 2026 →</a>
     </div>
@@ -168,6 +197,7 @@
   </div>
 
   <script>
+    // Create sparkles
     const container = document.getElementById('sparkle-container');
     for (let i = 0; i < 40; i++) {
       const s = document.createElement('div');
@@ -180,6 +210,7 @@
 
     function unlock() {
       const p = document.getElementById('pass').value.trim();
+      // Password is: for_you
       if (p === 'for_you') {
         document.getElementById('lock').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
