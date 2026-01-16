@@ -1,0 +1,7 @@
+# Allow everyone to see the login page
+/index.html  /index.html  200
+
+# Block everything else and force login
+/* 200!  Role=user
+/* /index.html  401!
+
