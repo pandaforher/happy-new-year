@@ -31,31 +31,7 @@
     h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; font-size: 1.5rem; }
     p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
     
-    /* --- FIX FOR THE DOUBLE TEXT --- */
-    .netlify-identity-menu { 
-        list-style: none; 
-        padding: 0; 
-        margin: 0;
-    }
-    /* Hide the second item (Sign Up) completely */
-    .netlify-identity-item:nth-child(2) { 
-        display: none !important; 
-    }
-    /* Style the Login Link to look like a button */
-    .netlify-identity-login {
-        text-decoration: none;
-        color: #000 !important;
-        background: linear-gradient(45deg, #00dbb5, #00b894);
-        padding: 12px 30px;
-        border-radius: 50px;
-        font-weight: bold;
-        display: inline-block;
-        box-shadow: 0 5px 15px rgba(0, 219, 181, 0.4);
-        transition: transform 0.2s;
-    }
-    .netlify-identity-login:active { transform: scale(0.95); }
-    
-    /* Dashboard Buttons */
+    /* Button Styles */
     .btn {
       display: block;
       width: 100%;
@@ -67,9 +43,22 @@
       border: none;
       font-size: 1rem;
       cursor: pointer;
+      transition: transform 0.2s;
     }
-    .enter-btn { background: linear-gradient(45deg, #00dbb5, #00b894); color: #000; }
-    .logout-btn { background: transparent; border: 2px solid #ff4757; color: #ff4757; }
+    .btn:active { transform: scale(0.95); }
+
+    /* The Login/Enter Button (Teal) */
+    .enter-btn { 
+      background: linear-gradient(45deg, #00dbb5, #00b894); 
+      color: #000; 
+      box-shadow: 0 5px 15px rgba(0, 219, 181, 0.3);
+    }
+    /* The Logout Button (Red Outline) */
+    .logout-btn { 
+      background: transparent; 
+      border: 2px solid #ff4757; 
+      color: #ff4757; 
+    }
   </style>
 </head>
 <body>
@@ -78,12 +67,14 @@
     <div id="login-section">
         <h1>RESTRICTED</h1>
         <p>This area is private.<br>Please identify yourself.</p>
-        <div data-netlify-identity-button></div>
+        
+        <button onclick="netlifyIdentity.open('login')" class="btn enter-btn">Log In</button>
     </div>
 
     <div id="user-dashboard" style="display: none;">
         <h1>WELCOME ❤️</h1>
         <p>You are logged in.</p>
+        
         <a href="/day24.html" class="btn enter-btn">Enter Website ➜</a>
         <button onclick="netlifyIdentity.logout()" class="btn logout-btn">Log Out</button>
     </div>
@@ -103,10 +94,18 @@
         }
     }
 
+    // Initialize Widget
     netlifyIdentity.init();
+    
+    // Check status
     const user = netlifyIdentity.currentUser();
     updateUI(user);
-    netlifyIdentity.on('login', user => updateUI(user));
+
+    // Listen for changes
+    netlifyIdentity.on('login', user => {
+        netlifyIdentity.close(); // Close the modal automatically
+        updateUI(user);
+    });
     netlifyIdentity.on('logout', () => updateUI(null));
   </script>
 
