@@ -1,25 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting…</title>
-
-    <!-- Instantly redirect to Day 24 -->
-    <meta http-equiv="refresh" content="0; URL=day24.html" />
-
-    <!-- Fallback message (in case redirect is slow) -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restricted Access</title>
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #2b1a2b, #000);
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    .card {
+      padding: 40px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+    h1 { margin-bottom: 10px; font-weight: 300; letter-spacing: 2px; }
+    p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
+    
+    /* Style the Identity Button */
+    .netlify-identity-menu { list-style: none; padding: 0; }
+    .netlify-identity-item { margin-top: 10px; }
+    /* Hide the "Sign Up" tab text to keep it clean */
+    .netlify-identity-signup { display: none !important; }
+  </style>
 </head>
 <body>
-    <h2>Redirecting…</h2>
-    <p>If you are not redirected automatically, <a href="day24.html">click here</a>.</p>
+
+  <div class="card">
+    <h1>RESTRICTED</h1>
+    <p>This area is private.<br>Please identify yourself.</p>
+    
+    <div data-netlify-identity-button></div>
+  </div>
+
+  <script>
+    // Redirect to Day 24 (First page) after login
+    netlifyIdentity.on('login', user => {
+      window.location.href = '/day24.html';
+    });
+    
+    // Check if already logged in
+    const user = netlifyIdentity.currentUser();
+    if (user) {
+        window.location.href = '/day24.html';
+    }
+  </script>
+
 </body>
 </html>
