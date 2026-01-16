@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restricted Access</title>
+  <title>Welcome</title>
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
     body {
@@ -13,48 +13,105 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #2b1a2b, #000);
+      background: radial-gradient(circle at top, #1a0b1a, #000);
       color: white;
-      font-family: sans-serif;
+      font-family: 'Poppins', sans-serif;
       text-align: center;
     }
     .card {
       padding: 40px;
+      width: 80%;
+      max-width: 350px;
       background: rgba(255,255,255,0.05);
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    h1 { margin-bottom: 10px; font-weight: 300; letter-spacing: 2px; }
+    h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; font-size: 1.5rem; }
     p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
     
-    /* Style the Identity Button */
+    /* Clean up Netlify buttons */
     .netlify-identity-menu { list-style: none; padding: 0; }
-    .netlify-identity-item { margin-top: 10px; }
-    /* Hide the "Sign Up" tab text to keep it clean */
     .netlify-identity-signup { display: none !important; }
+
+    /* Custom Buttons */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px 0;
+      margin: 10px 0;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: transform 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+    .btn:active { transform: scale(0.95); }
+
+    /* Enter Button (Green/Teal) */
+    .enter-btn {
+      background: linear-gradient(45deg, #00dbb5, #00b894);
+      color: #000;
+      box-shadow: 0 5px 15px rgba(0, 219, 181, 0.3);
+    }
+
+    /* Logout Button (Red/Pink outline) */
+    .logout-btn {
+      background: transparent;
+      border: 2px solid #ff4757;
+      color: #ff4757;
+    }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1>RESTRICTED</h1>
-    <p>This area is private.<br>Please identify yourself.</p>
-    
-    <div data-netlify-identity-button></div>
+    <div id="login-section">
+        <h1>RESTRICTED</h1>
+        <p>This area is private.<br>Please identify yourself.</p>
+        <div data-netlify-identity-button></div>
+    </div>
+
+    <div id="user-dashboard" style="display: none;">
+        <h1>WELCOME ❤️</h1>
+        <p>You are logged in.</p>
+        
+        <a href="/day24.html" class="btn enter-btn">Enter Website ➜</a>
+        <button onclick="netlifyIdentity.logout()" class="btn logout-btn">Log Out</button>
+    </div>
   </div>
 
   <script>
-    // Redirect to Day 24 (First page) after login
-    netlifyIdentity.on('login', user => {
-      window.location.href = '/day24.html';
-    });
-    
-    // Check if already logged in
-    const user = netlifyIdentity.currentUser();
-    if (user) {
-        window.location.href = '/day24.html';
+    // Elements
+    const loginSection = document.getElementById('login-section');
+    const dashboard = document.getElementById('user-dashboard');
+
+    // Function to switch screens
+    function updateUI(user) {
+        if (user) {
+            // User is logged in -> Show Dashboard
+            loginSection.style.display = 'none';
+            dashboard.style.display = 'block';
+        } else {
+            // User is NOT logged in -> Show Login
+            loginSection.style.display = 'block';
+            dashboard.style.display = 'none';
+        }
     }
+
+    // Initialize Identity
+    netlifyIdentity.init();
+    
+    // Check status immediately on load
+    const user = netlifyIdentity.currentUser();
+    updateUI(user);
+
+    // Listen for changes (Login/Logout)
+    netlifyIdentity.on('login', user => updateUI(user));
+    netlifyIdentity.on('logout', () => updateUI(null));
   </script>
 
 </body>
