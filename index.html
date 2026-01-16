@@ -31,11 +31,31 @@
     h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; font-size: 1.5rem; }
     p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
     
-    /* Clean up Netlify buttons */
-    .netlify-identity-menu { list-style: none; padding: 0; }
-    .netlify-identity-signup { display: none !important; }
-
-    /* Custom Buttons */
+    /* --- FIX FOR THE DOUBLE TEXT --- */
+    .netlify-identity-menu { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0;
+    }
+    /* Hide the second item (Sign Up) completely */
+    .netlify-identity-item:nth-child(2) { 
+        display: none !important; 
+    }
+    /* Style the Login Link to look like a button */
+    .netlify-identity-login {
+        text-decoration: none;
+        color: #000 !important;
+        background: linear-gradient(45deg, #00dbb5, #00b894);
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: bold;
+        display: inline-block;
+        box-shadow: 0 5px 15px rgba(0, 219, 181, 0.4);
+        transition: transform 0.2s;
+    }
+    .netlify-identity-login:active { transform: scale(0.95); }
+    
+    /* Dashboard Buttons */
     .btn {
       display: block;
       width: 100%;
@@ -44,26 +64,12 @@
       border-radius: 50px;
       text-decoration: none;
       font-weight: bold;
-      transition: transform 0.2s;
-      cursor: pointer;
       border: none;
       font-size: 1rem;
+      cursor: pointer;
     }
-    .btn:active { transform: scale(0.95); }
-
-    /* Enter Button (Green/Teal) */
-    .enter-btn {
-      background: linear-gradient(45deg, #00dbb5, #00b894);
-      color: #000;
-      box-shadow: 0 5px 15px rgba(0, 219, 181, 0.3);
-    }
-
-    /* Logout Button (Red/Pink outline) */
-    .logout-btn {
-      background: transparent;
-      border: 2px solid #ff4757;
-      color: #ff4757;
-    }
+    .enter-btn { background: linear-gradient(45deg, #00dbb5, #00b894); color: #000; }
+    .logout-btn { background: transparent; border: 2px solid #ff4757; color: #ff4757; }
   </style>
 </head>
 <body>
@@ -78,38 +84,28 @@
     <div id="user-dashboard" style="display: none;">
         <h1>WELCOME ❤️</h1>
         <p>You are logged in.</p>
-        
         <a href="/day24.html" class="btn enter-btn">Enter Website ➜</a>
         <button onclick="netlifyIdentity.logout()" class="btn logout-btn">Log Out</button>
     </div>
   </div>
 
   <script>
-    // Elements
     const loginSection = document.getElementById('login-section');
     const dashboard = document.getElementById('user-dashboard');
 
-    // Function to switch screens
     function updateUI(user) {
         if (user) {
-            // User is logged in -> Show Dashboard
             loginSection.style.display = 'none';
             dashboard.style.display = 'block';
         } else {
-            // User is NOT logged in -> Show Login
             loginSection.style.display = 'block';
             dashboard.style.display = 'none';
         }
     }
 
-    // Initialize Identity
     netlifyIdentity.init();
-    
-    // Check status immediately on load
     const user = netlifyIdentity.currentUser();
     updateUI(user);
-
-    // Listen for changes (Login/Logout)
     netlifyIdentity.on('login', user => updateUI(user));
     netlifyIdentity.on('logout', () => updateUI(null));
   </script>
