@@ -47,7 +47,6 @@
     }
     .btn:active { transform: scale(0.95); }
 
-    /* The Login Button */
     .enter-btn { 
       background: linear-gradient(45deg, #00dbb5, #00b894); 
       color: #000; 
@@ -88,26 +87,30 @@
     const loginSection = document.getElementById('login-section');
     const loadingSection = document.getElementById('loading-section');
 
-    function handleLogin(user) {
-        if (user) {
-            loginSection.style.display = 'none';
-            loadingSection.style.display = 'block';
-            setTimeout(() => {
-                window.location.href = "/day24.html";
-            }, 1000);
-        } else {
-            loginSection.style.display = 'block';
-            loadingSection.style.display = 'none';
-        }
-    }
-
+    // Initialize the Widget
     netlifyIdentity.init();
-    const user = netlifyIdentity.currentUser();
-    handleLogin(user);
 
+    // --- THE SECRET SAUCE ---
+    // If the browser remembers a user, Log them OUT immediately.
+    // This forces the login prompt every single time the page loads.
+    if (netlifyIdentity.currentUser()) {
+        netlifyIdentity.logout();
+    }
+    // ------------------------
+
+    // Listen for a NEW login
     netlifyIdentity.on('login', user => {
+        // Once they successfully type the password...
         netlifyIdentity.close();
-        handleLogin(user);
+        
+        // Show the loading animation
+        loginSection.style.display = 'none';
+        loadingSection.style.display = 'block';
+        
+        // Redirect after 1 second
+        setTimeout(() => {
+            window.location.href = "/day24.html";
+        }, 1000);
     });
   </script>
 
