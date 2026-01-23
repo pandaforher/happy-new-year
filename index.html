@@ -79,22 +79,6 @@
     </div>
   </div>
 
-  <script>
-    const loginSection = document.getElementById('login-section');
-    const dashboard = document.getElementById('user-dashboard');
-
-    function updateUI(user) {
-        if (user) {
-            loginSection.style.display = 'none';
-            dashboard.style.display = 'block';
-        } else {
-            loginSection.style.display = 'block';
-            dashboard.style.display = 'none';
-        }
-    }
-
-    
-  </script>
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
 <script>
 let auth0Client;
