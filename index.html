@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome</title>
-  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
     body {
       margin: 0;
@@ -68,7 +67,7 @@
         <h1>RESTRICTED</h1>
         <p>This area is private.<br>Please identify yourself.</p>
         
-        <button onclick="netlifyIdentity.open('login')" class="btn enter-btn">Log In</button>
+        <button onclick="login()" class="btn enter-btn">Log In</button>
     </div>
 
     <div id="user-dashboard" style="display: none;">
@@ -76,7 +75,7 @@
         <p>You are logged in.</p>
         
         <a href="/day24.html" class="btn enter-btn">Enter Website ➜</a>
-        <button onclick="netlifyIdentity.logout()" class="btn logout-btn">Log Out</button>
+        <button onclick="logout()" class="btn logout-btn">Log Out</button>
     </div>
   </div>
 
@@ -94,20 +93,51 @@
         }
     }
 
-    // Initialize Widget
-    netlifyIdentity.init();
     
-    // Check status
-    const user = netlifyIdentity.currentUser();
-    updateUI(user);
-
-    // Listen for changes
-    netlifyIdentity.on('login', user => {
-        netlifyIdentity.close(); // Close the modal automatically
-        updateUI(user);
-    });
-    netlifyIdentity.on('logout', () => updateUI(null));
   </script>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+<script>
+let auth0Client;
+const loginSection = document.getElementById("login-section");
+const dashboard = document.getElementById("user-dashboard");
+
+function updateUI(loggedIn){
+  if(loggedIn){
+    loginSection.style.display = "none";
+    dashboard.style.display = "block";
+  } else {
+    loginSection.style.display = "block";
+    dashboard.style.display = "none";
+  }
+}
+
+async function initAuth() {
+  auth0Client = await createAuth0Client({
+    domain: "dev-afike2pmvk7p38vl.auth0.com",
+    clientId: "vTE1WGv7NGUNZSygk0C8Lv6kfoK5z4NH",
+    authorizationParams: {
+      redirect_uri: window.location.origin
+    }
+  });
+
+  if (location.search.includes("code=") && location.search.includes("state=")) {
+    await auth0Client.handleRedirectCallback();
+    window.history.replaceState({}, document.title, "/");
+  }
+
+  updateUI(await auth0Client.isAuthenticated());
+}
+
+function login(){
+  auth0Client.loginWithRedirect();
+}
+
+function logout(){
+  auth0Client.logout({ returnTo: window.location.origin });
+}
+
+initAuth();
+</script>
 
 </body>
 </html>
