@@ -1,140 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Welcome</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restricted Access</title>
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1a0b1a, #000);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+    }
+    .card {
+      padding: 40px;
+      width: 80%;
+      max-width: 350px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; font-size: 1.5rem; }
+    p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
+    
+    /* Button Styles */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px 0;
+      margin: 10px 0;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn:active { transform: scale(0.95); }
 
-<style>
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at top, #1a0b1a, #000);
-  color: white;
-  font-family: Poppins, sans-serif;
-  text-align: center;
-}
-
-.card {
-  padding: 40px;
-  width: 80%;
-  max-width: 350px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; }
-p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
-
-.btn {
-  display: block;
-  width: 100%;
-  padding: 15px 0;
-  margin: 10px 0;
-  border-radius: 50px;
-  border: none;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.enter-btn {
-  background: linear-gradient(45deg,#00dbb5,#00b894);
-  color: #000;
-  box-shadow: 0 5px 15px rgba(0,219,181,0.3);
-}
-
-.logout-btn {
-  background: transparent;
-  border: 2px solid #ff4757;
-  color: #ff4757;
-}
-</style>
+    /* The Login Button */
+    .enter-btn { 
+      background: linear-gradient(45deg, #00dbb5, #00b894); 
+      color: #000; 
+      box-shadow: 0 5px 15px rgba(0, 219, 181, 0.3);
+    }
+    
+    /* Loading Spinner */
+    .loader {
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid #00dbb5;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
 </head>
-
 <body>
 
-<div class="card">
-  <div id="login-section">
-    <h1>RESTRICTED</h1>
-    <p>This area is private.<br>Please identify yourself.</p>
-    <button id="loginBtn" onclick="login()" class="btn enter-btn" disabled>
-      Log In
-    </button>
+  <div class="card">
+    <div id="login-section">
+        <h1>RESTRICTED</h1>
+        <p>This area is private.<br>Please identify yourself.</p>
+        <button onclick="netlifyIdentity.open('login')" class="btn enter-btn">Log In</button>
+    </div>
+
+    <div id="loading-section" style="display: none;">
+        <h1>ACCESS GRANTED</h1>
+        <p>Unlocking memories...</p>
+        <div class="loader" style="display:block;"></div>
+    </div>
   </div>
 
-  <div id="user-dashboard" style="display:none;">
-    <h1>WELCOME ❤️</h1>
-    <p>You are logged in.</p>
-    <a href="./day24.html" class="btn enter-btn">Enter Website ➜</a>
-    <button onclick="logout()" class="btn logout-btn">Log Out</button>
-  </div>
-</div>
+  <script>
+    const loginSection = document.getElementById('login-section');
+    const loadingSection = document.getElementById('loading-section');
 
-<!-- Auth0 -->
-<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-
-<script>
-let auth0Client = null;
-
-const loginSection = document.getElementById("login-section");
-const dashboard = document.getElementById("user-dashboard");
-const loginBtn = document.getElementById("loginBtn");
-
-function updateUI(loggedIn){
-  if(loggedIn){
-    loginSection.style.display = "none";
-    dashboard.style.display = "block";
-  } else {
-    loginSection.style.display = "block";
-    dashboard.style.display = "none";
-  }
-}
-
-async function initAuth() {
-  auth0Client = await createAuth0Client({
-    domain: "dev-afike2pmvk7p38vl.auth0.com",
-    clientId: "vTE1WGv7NGUNZSygk0C8Lv6kfoK5z4NH",
-    authorizationParams: {
-      redirect_uri: window.location.origin
+    function handleLogin(user) {
+        if (user) {
+            loginSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = "/day24.html";
+            }, 1000);
+        } else {
+            loginSection.style.display = 'block';
+            loadingSection.style.display = 'none';
+        }
     }
-  });
 
-  loginBtn.disabled = false;
+    netlifyIdentity.init();
+    const user = netlifyIdentity.currentUser();
+    handleLogin(user);
 
-  if (location.search.includes("code=") && location.search.includes("state=")) {
-    await auth0Client.handleRedirectCallback();
-    window.history.replaceState({}, document.title, "/");
-  }
-
-  const isAuth = await auth0Client.isAuthenticated();
-  updateUI(isAuth);
-}
-
-function login(){
-  if(!auth0Client){
-    alert("Auth not ready yet, wait 2 seconds.");
-    return;
-  }
-  auth0Client.loginWithRedirect();
-}
-
-function logout(){
-  auth0Client.logout({
-    logoutParams: {
-      returnTo: window.location.origin
-    }
-  });
-}
-
-initAuth();
-</script>
+    netlifyIdentity.on('login', user => {
+        netlifyIdentity.close();
+        handleLogin(user);
+    });
+  </script>
 
 </body>
 </html>
