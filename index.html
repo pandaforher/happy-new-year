@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault</title>
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1a0b1a, #000);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+    }
+    .card {
+      padding: 40px;
+      width: 80%;
+      max-width: 350px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    h1 { margin: 0 0 10px; font-weight: 300; letter-spacing: 2px; font-size: 1.5rem; }
+    p { color: #aaa; margin-bottom: 30px; font-size: 0.9rem; }
+    
+    /* Button Styles */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px 0;
+      margin: 15px 0;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-sizing: border-box;
+    }
+    .btn:active { transform: scale(0.95); }
+
+    .enter-btn { 
+      background: linear-gradient(45deg, #00dbb5, #00b894); 
+      color: #000; 
+      box-shadow: 0 5px 15px rgba(0, 219, 181, 0.3);
+    }
+
+    .milestone-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-btn {
+      background: transparent;
+      color: #ff4b4b;
+      border: 1px solid #ff4b4b;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="login-section">
+      <h1>THE VAULT</h1>
+      <p>A secure space for our memories.<br>Please identify yourself.</p>
+      <button onclick="netlifyIdentity.open('login')" class="btn enter-btn">Log In</button>
+  </div>
+
+  <div class="card" id="hub-section" style="display: none;">
+      <h1>THE VAULT</h1>
+      <p>Welcome back.<br>Choose a memory to unlock.</p>
+      
+      <a href="/day24.html" class="btn milestone-btn">New Year 2026 🎆</a>
+      
+      <a href="/birthday2026.html" class="btn milestone-btn">Birthday 2026 🎂</a>
+
+      <button onclick="netlifyIdentity.logout()" class="btn logout-btn">Lock Vault</button>
+  </div>
+
+  <script>
+    const loginSection = document.getElementById('login-section');
+    const hubSection = document.getElementById('hub-section');
+
+    // Initialize the Widget
+    netlifyIdentity.init();
+
+    // Function to show the correct screen based on login status
+    function updateUI(user) {
+      if (user) {
+        loginSection.style.display = 'none';
+        hubSection.style.display = 'block';
+      } else {
+        loginSection.style.display = 'block';
+        hubSection.style.display = 'none';
+      }
+    }
+
+    // Check status right when the page loads
+    updateUI(netlifyIdentity.currentUser());
+
+    // Listen for logins
+    netlifyIdentity.on('login', user => {
+        netlifyIdentity.close(); // Close the Netlify popup
+        updateUI(user);          // Show the Hub
+    });
+
+    // Listen for logouts
+    netlifyIdentity.on('logout', () => {
+        updateUI(null);          // Show the Login screen
+    });
+  </script>
+
+</body>
+</html>
 
