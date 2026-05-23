@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday 2026 🎂</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px; /* Prevents letter from touching edges on small phones */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; /* Centers the letter perfectly */
+      background: radial-gradient(circle at top, #1a0b1a, #000);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    /* --- THE PREMIUM ENVELOPE --- */
+    #envelope-wrapper {
+      position: absolute; /* Bulletproof centering for all devices */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 210px;
+      cursor: pointer;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 10;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); /* Realistic shadow */
+    }
+
+    /* Inside back of the envelope */
+    .envelope-back {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: #c9bca7; 
+      border-radius: 8px;
+    }
+
+    /* Left and Right Flaps */
+    .envelope-left {
+      position: absolute; width: 100%; height: 100%;
+      background: #e8d5b5;
+      clip-path: polygon(0 0, 50% 50%, 0 100%);
+      border-radius: 8px 0 0 8px;
+      z-index: 2;
+    }
+    .envelope-right {
+      position: absolute; width: 100%; height: 100%;
+      background: #e8d5b5;
+      clip-path: polygon(100% 0, 50% 50%, 100% 100%);
+      border-radius: 0 8px 8px 0;
+      z-index: 2;
+    }
+
+    /* Bottom Flap */
+    .envelope-bottom {
+      position: absolute; width: 100%; height: 100%;
+      background: #f2e3c6;
+      clip-path: polygon(0 100%, 50% 55%, 100% 100%);
+      border-radius: 0 0 8px 8px;
+      z-index: 3;
+      filter: drop-shadow(0 -2px 4px rgba(0,0,0,0.05));
+    }
+
+    /* Top Flap (The one that opens) */
+    .envelope-top {
+      position: absolute; width: 100%; height: 100%;
+      background: #fdf1d9;
+      clip-path: polygon(0 0, 50% 60%, 100% 0);
+      border-radius: 8px 8px 0 0;
+      transform-origin: top;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+    }
+
+    .envelope-top.open {
+      transform: rotateX(180deg);
+      z-index: 1; /* Pushes it behind the bottom flap when open */
+    }
+
+    /* The Heart Seal */
+    .seal {
+      position: absolute;
+      left: 50%;
+      top: 60%; /* Matches the tip of the top flap */
+      transform: translate(-50%, -50%);
+      font-size: 45px;
+      transition: opacity 0.2s;
+    }
+
+    .envelope-top.open .seal {
+      opacity: 0;
+    }
+
+    .tap-text {
+      position: absolute;
+      bottom: -45px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: #ccc;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+
+    /* --- THE LETTER & CONTENT --- */
+    #content-wrapper {
+      display: none; /* Hidden until envelope is clicked */
+      width: 100%;
+      max-width: 500px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      flex-direction: column;
+      align-items: center;
+      z-index: 20;
+    }
+
+    #content-wrapper.show {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      box-sizing: border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      line-height: 1.6;
+      font-size: 1.05rem;
+      color: #e0e0e0;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-weight: 300;
+      letter-spacing: 2px;
+      font-size: 1.8rem;
+      text-align: center;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    p { margin-bottom: 20px; }
+
+    .signature {
+      text-align: right;
+      font-style: italic;
+      color: #00dbb5;
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .btn:active { transform: scale(0.95); }
+
+
+    /* --- HEART BURST ANIMATION --- */
+    #heart-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .heart-particle {
+      position: absolute;
+      font-size: 2rem;
+      animation: floatUp 2.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(var(--rot));
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-music" src="Bday2026.mp3" loop></audio>
+
+  <div id="envelope-wrapper" onclick="openEnvelope()">
+    <div class="envelope-back"></div>
+    <div class="envelope-left"></div>
+    <div class="envelope-right"></div>
+    <div class="envelope-bottom"></div>
+    <div class="envelope-top" id="flap">
+      <div class="seal">❤️</div>
+    </div>
+    <div class="tap-text">Tap to open</div>
+  </div>
+
+  <div id="content-wrapper">
+    <div class="letter-card">
+      <h1>Happy Birthday! 🎉🎂❤️</h1>
+      <p>HAPPY BIRTHDAY 🎉 🎂 🎂 ❤️ 😚 🫂 my dear wifey meri pyari baiko meri baby my everything, wish you many many happy returns of the day 🎉🥳. I really am happy for this day 😂, pehle ka toh pata ni but ye wala alag hai sabse , kyuki isme mai hu na 😎</p>
+      <p>Wifeyyyy, ye hamare relationship mei aane ke baad tumhara pehla birthday hogaaa, fir future mei tumhara birthday ham ek din saath mei bhi celebrate krege hehe, ek pura cake tumhare face pe marduga 😂😂, fir kissie deke khauga 😚</p>
+      <p>Wifeyyyy I am sorry for my mistakes , and thank you for everything my love ❤️ , thank you mere saath rehne ke liye, mujhe choose krne ke liye, mujhe chances dene ke liye! Bas ab, tum apna day enjoy kro, wish me luck for exams</p>
+      <p>I love you 💓</p>
+      <p>😚</p>
+      <p>Firse happy birthday baikoooo my everything 😚 😚 😚 😚 😚 💕 💞 ❤️ 😚 😚 💕 🫂 🫂 🫂 🫂 ❤️❤️❤️❤️❤️</p>
+      <div class="signature">
+        ~ from, your huss
+      </div>
+    </div>
+    <a href="/index.html" class="btn">← Back to Vault</a>
+  </div>
+
+  <div id="heart-container"></div>
+
+  <script>
+    let isOpened = false;
+
+    function openEnvelope() {
+      if (isOpened) return;
+      isOpened = true;
+
+      const envelopeWrapper = document.getElementById('envelope-wrapper');
+      const flap = document.getElementById('flap');
+      const contentWrapper = document.getElementById('content-wrapper');
+      const music = document.getElementById('bg-music');
+
+      // 1. Open the flap
+      flap.classList.add('open');
+
+      // 2. Play the music
+      music.play();
+
+      // 3. Fade out envelope after flap animation
+      setTimeout(() => {
+        envelopeWrapper.style.opacity = '0';
+        envelopeWrapper.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      }, 700);
+
+      // 4. Remove envelope and show letter + hearts
+      setTimeout(() => {
+        envelopeWrapper.style.display = 'none';
+        contentWrapper.style.display = 'flex';
+        
+        // Slight delay to allow CSS to render 'flex' before applying opacity transition
+        setTimeout(() => {
+          contentWrapper.classList.add('show');
+          burstHearts();
+        }, 50);
+
+      }, 1200);
+    }
+
+    function burstHearts() {
+      const container = document.getElementById('heart-container');
+      const emojis = ['❤️', '💖', '💝', '💕', '💞', '💓'];
+      
+      for (let i = 0; i < 30; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        // Start precisely from center of the screen
+        heart.style.left = '50%';
+        heart.style.top = '50%';
+
+        // Random trajectories
+        const tx = (Math.random() - 0.5) * 500 + 'px'; 
+        const ty = (Math.random() - 0.5) * 700 - 200 + 'px'; 
+        const rot = (Math.random() - 0.5) * 360 + 'deg'; 
+
+        heart.style.setProperty('--tx', tx);
+        heart.style.setProperty('--ty', ty);
+        heart.style.setProperty('--rot', rot);
+        
+        heart.style.animationDelay = (Math.random() * 0.3) + 's';
+
+        container.appendChild(heart);
+      }
+
+      // Clean up DOM after animation finishes
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3500);
+    }
+  </script>
+
+</body>
+</html>
